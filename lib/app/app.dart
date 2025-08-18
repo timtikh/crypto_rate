@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../pages/home_page.dart';
 import '../pages/login/presentation/login_page.dart';
 import '../pages/login/providers/auth_providers.dart';
 import '../pages/rates/rates_page.dart';
@@ -17,7 +18,7 @@ class MyApp extends ConsumerWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
       home: authState.when(
-        data: (user) => user == null ? const LoginPage() : const RatesPage(title: 'Rates',),
+        data: (user) => user == null ? const LoginPage() : const HomePage(),
         loading: () => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
