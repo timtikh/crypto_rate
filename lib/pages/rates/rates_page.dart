@@ -1,21 +1,52 @@
+import 'dart:async';
 
+import 'package:crypto_rate/api_keys.dart';
 import 'package:flutter/material.dart';
 
-class RatesPage extends StatefulWidget {
-  const RatesPage({super.key, required this.title});
+import '../login/presentation/login_page.dart';
+import '../login/providers/auth_providers.dart';
+import 'data/coincap_api_getter.dart';
+import 'data/rate_model.dart';
+import 'data/rates_repository_impl.dart';
+import 'domain/rates_repository.dart';
 
-  final String title;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../login/providers/auth_providers.dart';
+
+class RatesPage extends StatefulWidget {
+  const RatesPage({super.key});
 
   @override
   State<RatesPage> createState() => _RatesPageState();
 }
 
 class _RatesPageState extends State<RatesPage> {
-  int _counter = 0;
+  late RatesRepository _repository;
+  late Future<List<RateModel>> _futureRates;
+  Timer? _timer;
 
-  void _incrementCounter() {
+  @override
+  void initState() {
+    super.initState();
+    // хмм мне не нравится как это выглядит типо, по-хорошему где-то это все
+    // в отдельном контейнере инитить ну и чтобы клинуха работала по-настоящему
+    _repository = RatesRepositoryImpl(
+      apiGetter: CoinCapApiGetter(apiKey: ApiKeys.coinCapApiKey),
+    );
+    _fetchRates();
+    _timer = Timer.periodic(const Duration(seconds: 30), (_) => _fetchRates());
+  }
+
+  @override
+  void dispose() {
+    // обязательно отменяем таймер
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _fetchRates() {
     setState(() {
-      _counter++;
+      _futureRates = _repository.fetchRates();
     });
   }
 
@@ -23,26 +54,67 @@ class _RatesPageState extends State<RatesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        title: const Text("Rates"),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: _fetchRates,
         ),
+        actions: [
+          Consumer(builder: (context, ref, child) {
+            return IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () async {
+                final auth = ref.read(authServiceProvider);
+                await auth.signOut();
+                if (context.mounted) {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => const LoginPage()),
+                  );
+                }
+              },
+            );
+          }),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: FutureBuilder<List<RateModel>>(
+        future: _futureRates,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text("Ошибка: ${snapshot.error}"));
+          }
+
+          final rates = snapshot.data ?? [];
+
+          return ListView.separated(
+            itemCount: rates.length,
+            separatorBuilder: (_, __) => const Divider(height: 0),
+            itemBuilder: (context, index) {
+              final rate = rates[index];
+              return ListTile(
+                title: Text(rate.symbol),
+                trailing: Text(
+                  _formatRate(rate.rateUsd),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
+  }
+
+  String _formatRate(String rate) {
+    try {
+      final value = double.parse(rate);
+      return value.toStringAsFixed(18);
+    } catch (_) {
+      return rate;
+    }
   }
 }

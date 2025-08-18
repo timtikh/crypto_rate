@@ -45,9 +45,9 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        children: const [
-          RatesPage(title: 'Rates'),
-          Center(child: Text("Convert (скоро)")),
+        children: [
+          RatesPage(),
+          const Center(child: Text("Convert (скоро)")),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
