@@ -14,6 +14,7 @@ class MyApp extends ConsumerWidget {
     final authState = ref.watch(authStateChangesProvider);
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
