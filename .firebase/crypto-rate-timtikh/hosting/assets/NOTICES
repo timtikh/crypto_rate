@@ -949,6 +949,7 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------------
 analyzer
+intl
 
 Copyright 2013, the Dart project authors.
 
@@ -5120,7 +5121,9 @@ ci
    limitations under the License.
 --------------------------------------------------------------------------------
 clock
+decimal
 fake_async
+rational
 
 
                                  Apache License
