@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:crypto_rate/api_keys.dart';
+import 'package:crypto_rate/shared/logout_button.dart';
 import 'package:flutter/material.dart';
 
 import '../login/presentation/login_page.dart';
@@ -60,22 +61,7 @@ class _RatesPageState extends State<RatesPage> {
           icon: const Icon(Icons.refresh),
           onPressed: _fetchRates,
         ),
-        actions: [
-          Consumer(builder: (context, ref, child) {
-            return IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () async {
-                final auth = ref.read(authServiceProvider);
-                await auth.signOut();
-                if (context.mounted) {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => const LoginPage()),
-                  );
-                }
-              },
-            );
-          }),
-        ],
+        actions: [LogoutButton()],
       ),
       body: FutureBuilder<List<RateModel>>(
         future: _futureRates,
@@ -85,7 +71,7 @@ class _RatesPageState extends State<RatesPage> {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text("Ошибка: ${snapshot.error}"));
+            return Center(child: Text("Error: ${snapshot.error}"));
           }
 
           final rates = snapshot.data ?? [];
@@ -96,10 +82,16 @@ class _RatesPageState extends State<RatesPage> {
             itemBuilder: (context, index) {
               final rate = rates[index];
               return ListTile(
-                title: Text(rate.symbol),
+                title: Text(
+                  rate.symbol,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
                 trailing: Text(
                   _formatRate(rate.rateUsd),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontSize: 16),
                 ),
               );
             },

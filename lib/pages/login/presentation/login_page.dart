@@ -12,8 +12,13 @@ class LoginPage extends ConsumerStatefulWidget {
 
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _emailCtrl = TextEditingController();
-  final _passwordCtrl = TextEditingController();
+
+  // TODO: delete from here
+  final _emailCtrl = TextEditingController.fromValue(
+    TextEditingValue(text: 'demo@demo.demo'),
+  );
+  final _passwordCtrl = TextEditingController.fromValue(
+      TextEditingValue(text: 'demo.demo'));
 
   bool _loading = false;
   String? _error;
@@ -31,7 +36,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           .signIn(_emailCtrl.text.trim(), _passwordCtrl.text.trim());
     } catch (e) {
       setState(() {
-        _error = "Ошибка входа: ${e.toString()}";
+        _error = "Auth Error: ${e.toString()}";
       });
     } finally {
       if (mounted) {
@@ -53,19 +58,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text("Вход", style: TextStyle(fontSize: 24)),
+                  const Text("Welcome!", style: TextStyle(fontSize: 24)),
                   TextFormField(
                     controller: _emailCtrl,
                     decoration: const InputDecoration(labelText: "Email"),
-                    validator: (v) =>
-                    v != null && v.contains('@') ? null : "Введите email",
+                    validator:
+                        (v) =>
+                            v != null && v.contains('@')
+                                ? null
+                                : "Enter email",
                   ),
                   TextFormField(
                     controller: _passwordCtrl,
-                    decoration: const InputDecoration(labelText: "Пароль"),
+                    decoration: const InputDecoration(labelText: "Password"),
                     obscureText: true,
-                    validator: (v) =>
-                    v != null && v.length >= 6 ? null : "Мин. 6 символов",
+                    validator:
+                        (v) =>
+                            v != null && v.length >= 6
+                                ? null
+                                : "Min. 6 symbols",
                   ),
                   const SizedBox(height: 16),
                   if (_error != null)
@@ -73,7 +84,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   _loading
                       ? const CircularProgressIndicator()
                       : ElevatedButton(
-                      onPressed: _login, child: const Text("Войти")),
+                        onPressed: _login,
+                        child: const Text("Login"),
+                      ),
                 ],
               ),
             ),

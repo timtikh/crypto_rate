@@ -21,7 +21,7 @@ class CoinCapApiGetter {
       final List<dynamic> data = response.data['data'] ?? [];
       return data.map((e) => RateModel.fromJson(e)).toList();
     } on DioException catch (e) {
-      throw Exception("Ошибка при запросе API: ${e.message}");
+      throw Exception("Error during API call: ${e.message}");
     }
   }
 }
