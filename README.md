@@ -1,16 +1,55 @@
-# crypto_rate
+# Crypto Rate
 
-simple crypto rate app with auth
+Приложение для просмотра курсов криптовалют и обмена туда-сюда с авторизацией.
 
-## Getting Started
+**Демо:** [https://crypto-rate-timtikh.web.app](https://crypto-rate-timtikh.web.app)
 
-This project is a starting point for a Flutter application.
+Пожалуйста не абьюзьте апи-ключ!
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Основные технологии
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Flutter** – UI и навигация
+- **Riverpod** – управление состоянием
+- **Dio** – HTTP запросы к API
+- **Firebase** – аутентификация
+- **Clean Architecture** – разделение слоев где имеет смысл:
+    - **Presentation** – страницы и UI
+    - **Domain** – абстрактные репозитории и бизнес-логика
+    - **Data** – конкретные реализации репозиториев, API-клиенты
+
+## Основные функции
+
+- Авторизация пользователей
+- Просмотр курсов криптовалют по CoinGate и CoinCap на выбор
+- Автообновление курсов каждые 30 секунд и ручное обновление
+- Страница конвертации с комиссией 3%
+- Предотвращение конвертации одинаковых валют
+
+
+## Как запустить у себя
+
+1. Клонируйте репозиторий:
+
+```bash
+git clone https://github.com/timtikh/crypto_rate.git
+cd crypto_rate
+``` 
+2. Настройте Firebase для проекта:
+```bash
+flutterfire configure
+```
+Убедитесь в FirebaseConsole, что аутентификация включена.
+
+3. Создайте файл /lib/api_keys.dart с вашим CoinCap API ключом:
+
+```bash
+class ApiKeys {
+  static String coinCapApiKey = 'ваш_ключ_от_CoinCap';
+}
+```
+
+
+
+
