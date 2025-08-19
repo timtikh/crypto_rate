@@ -1,3 +1,4 @@
+import 'package:crypto_rate/pages/convert/convert_page.dart';
 import 'package:crypto_rate/pages/rates/rates_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -45,10 +46,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        children: [
-          RatesPage(),
-          const Center(child: Text("Convert (скоро)")),
-        ],
+        children: [RatesPage(), ConvertPage()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
