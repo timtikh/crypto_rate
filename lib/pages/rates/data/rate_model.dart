@@ -23,6 +23,22 @@ class RateModel {
     );
   }
 
+  factory RateModel.fromCoingateJson(String id, Map<String, dynamic> ratesMap) {
+    // получаем список валют и создаем RateModel для каждой
+    // например BTC: {USD: "115119.93", EUR: "98485.1", ...}
+    List<RateModel> list = [];
+    ratesMap.forEach((currency, rate) {
+      list.add(RateModel(
+        id: id,
+        symbol: id,
+        currencySymbol: currency,
+        rateUsd: rate.toString(),
+      ));
+    });
+    // возвращаем первый, но в репозитории мы можем возвращать весь список
+    return list.first;
+  }
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'symbol': symbol,

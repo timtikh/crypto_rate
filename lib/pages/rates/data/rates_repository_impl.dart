@@ -4,7 +4,7 @@ import 'package:crypto_rate/pages/rates/data/rate_model.dart';
 import '../domain/rates_repository.dart';
 
 class RatesRepositoryImpl implements RatesRepository {
-  final CoinCapApiGetter apiGetter;
+  final apiGetter;
   // здесь по-хорошему нужно использовать какой-нибудь кэш,
   // но для простоты будет так. В целом этот репо для кэша
   List<RateModel> _lastRates = [];
